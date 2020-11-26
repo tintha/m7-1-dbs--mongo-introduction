@@ -116,8 +116,3 @@ Open this exercise file: [exercise-2.5.md](__workshop/exercise-2.5.md)
 
 Open this exercise file: [exercise-2.6.md](__workshop/exercise-2.6.md)
 
----
-
-<center>🟡 - Minimally complete workshop (75%) - 🟡</center>
-
----
