@@ -127,4 +127,40 @@ const deleteGreeting = async (req, res) => {
   }
 };
 
-module.exports = { createGreeting, getGreeting, getGreetings, deleteGreeting };
+const updateGreeting = async (req, res) => {
+  const _id = req.params._id.toUpperCase();
+  const query = { _id };
+
+  const newValue = { $set: { hello: req.body.hello } };
+
+  try {
+    const client = await MongoClient(MONGO_URI, options);
+    await client.connect();
+    const db = client.db("exercise_1");
+    if (!req.body.hello) {
+      res
+        .status(400)
+        .json({ status: 400, _id, ...req.body, message: "Unable to update" });
+    } else {
+      const result = await db
+        .collection("greetings")
+        .updateOne(query, newValue);
+      assert.strictEqual(1, result.matchedCount);
+      assert.strictEqual(1, result.modifiedCount);
+      res.status(202).json({ status: 202, _id, ...req.body });
+    }
+  } catch (err) {
+    res
+      .status(400)
+      .json({ status: 400, _id, ...req.body, message: "Unable to update" });
+    console.log(err);
+  }
+};
+
+module.exports = {
+  createGreeting,
+  getGreeting,
+  getGreetings,
+  deleteGreeting,
+  updateGreeting,
+};
