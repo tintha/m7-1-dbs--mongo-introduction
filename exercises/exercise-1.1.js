@@ -15,6 +15,7 @@ const dbFunction = async (dbName) => {
   // connect to the database (db name is provided as an argument to the function)
   const db = client.db(dbName);
   console.log("connected!");
+
   // close the connection to the database server
   await db.collection("users").insertOne({ name: "Buck Rogers" });
   client.close();

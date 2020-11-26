@@ -59,27 +59,34 @@ const getGreetings = async (req, res) => {
           data: result.slice(0, 25),
         });
       } else if (!start || isNaN(start)) {
+        const userLimit = Math.abs(Math.round(limit));
+        let changedLimit;
+        userLimit > result.length
+          ? (changedLimit = result.length)
+          : (changedLimit = userLimit);
+
         res.status(200).json({
           status: 200,
-          start: newStart,
-          limit: limit,
-          data: result.slice(
-            // Math.abs + .round in case user enters a negative or floating point number
-            Math.abs(Math.round(limit)) - 25 < 0
-              ? 0
-              : Math.abs(Math.round(limit)) - 25,
-            Math.abs(Math.round(limit))
-          ),
+          start: 0,
+          limit: changedLimit,
+          data: result.slice(0, changedLimit),
         });
       } else if (!limit || isNaN(limit)) {
+        let userStart = Math.abs(Math.round(start));
+        // fallback: show last item if user's start query is > the # of elements
+        userStart >= result.length
+          ? (userStart = result.length - 1)
+          : (userStart = userStart);
+        const defaultLimit = 25;
+        let setLimit;
+        userStart + defaultLimit > result.length
+          ? (setLimit = result.length - userStart)
+          : (setLimit = defaultLimit);
         res.status(200).json({
           status: 200,
-          data: result.slice(
-            Math.abs(Math.round(start)),
-            Math.abs(Math.round(start)) + 25 < result.length
-              ? Math.abs(Math.round(start)) + 25
-              : result.length
-          ),
+          start: userStart,
+          limit: setLimit,
+          data: result.slice(userStart, userStart + setLimit),
         });
       }
     } else {
@@ -92,4 +99,6 @@ const getGreetings = async (req, res) => {
   }
 };
 
-module.exports = { createGreeting, getGreeting, getGreetings };
+const deleteGreeting = async (req, res) => {};
+
+module.exports = { createGreeting, getGreeting, getGreetings, deleteGreeting };
